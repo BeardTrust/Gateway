@@ -1,0 +1,60 @@
+server:
+  port: ${PORT:9001}
+management:
+  server:
+    port: 10001
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+eureka:
+  address: ${EUADDR:localhost}
+  port: ${EUPORT:8761}
+  zone: ${EUZONE:eureka}
+  client:
+    service-url:
+      default-zone: http://${eureka.address}:${eureka.port}/${eureka.zone}
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: users-registration
+          uri: lb://user-service
+          predicates:
+            - Path=/users
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/(?<segment>), /api/$\{segment}
+        - id: users-login
+          uri: lb://user-service
+          predicates:
+            - Path=/users/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/users/(?<segment>), /api/$\{segment}
+        - id: users-view-edit-delete
+          uri: lb://user-service
+          predicates:
+            - Path=/users/id/**
+            - Method=GET,PUT,DELETE
+            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/users, /api/users
+            - AuthorizationHeaderFilter
+  security:
+    user:
+      name: ${SECNAME:dev}
+      password: ${SECPW:dev}
+token:
+  secret: aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj04WnEzS0NCZWQ1UQo=
+  expiration: 864000
+authorization:
+  token:
+    header:
+      name: Authorization
+      prefix: Bearer
