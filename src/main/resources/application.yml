@@ -21,7 +21,7 @@ spring:
     gateway:
       routes:
         - id: users-registration
-          uri: lb://user-registration-service
+          uri: lb://user-service
           predicates:
             - Path=/users
             - Method=POST
@@ -29,23 +29,27 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/(?<segment>), /api/$\{segment}
         - id: users-login
-          uri: lb://authentication-service
+          uri: lb://user-service
           predicates:
             - Path=/users/login
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/users/(?<segment>), /api/$\{segment}
-        - id: users-userid
-          uri: lb://users-service
+        - id: users-view-edit-delete
+          uri: lb://user-service
           predicates:
             - Path=/users/id/**
             - Method=GET,PUT,DELETE
             - Header=Authorization, Bearer (.*)
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/users/id/(?<segment>), /api/id/$\{segment}
+            - RewritePath=/users, /api/users
             - AuthorizationHeaderFilter
+  security:
+    user:
+      name: ${SECNAME:dev}
+      password: ${SECPW:dev}
 token:
   secret: aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj04WnEzS0NCZWQ1UQo=
   expiration: 864000
