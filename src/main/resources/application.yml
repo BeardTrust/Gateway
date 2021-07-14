@@ -46,6 +46,26 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/users, /api/users
             - AuthorizationHeaderFilter
+        - id: admin-users-view-edit-delete
+          uri: lb://user-service
+          predicates:
+            - Path=/admin/users/id/**
+            - Method=GET,DELETE,PUT
+            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/admin/users, /api/admin/users
+            - AuthorizationHeaderFilter
+        - id: admin-users-view-edit-delete
+          uri: lb://user-service
+          predicates:
+            - Path=/admin/users
+            - Method=POST,GET,PUT
+            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/admin/users, /api/admin/users
+            - AuthorizationHeaderFilter
   security:
     user:
       name: ${SECNAME:dev}
