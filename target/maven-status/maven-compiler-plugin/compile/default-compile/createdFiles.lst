@@ -1,0 +1,3 @@
+com/beardtrust/webapp/gateway/GatewayApplication.class
+com/beardtrust/webapp/gateway/AuthorizationHeaderFilter.class
+com/beardtrust/webapp/gateway/AuthorizationHeaderFilter$Config.class
