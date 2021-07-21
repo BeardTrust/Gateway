@@ -27,7 +27,6 @@ spring:
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RemoveRequestHeader=Access-Control-Allow-Origin
             - RewritePath=/(?<segment>), /api/$\{segment}
         - id: users-login
           uri: lb://user-service
