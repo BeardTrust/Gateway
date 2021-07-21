@@ -19,6 +19,15 @@ spring:
     name: gateway-service
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - POST
+              - GET
+              - PUT
+              - DELETE
       routes:
         - id: users-registration
           uri: lb://user-service
