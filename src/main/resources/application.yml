@@ -39,7 +39,7 @@ spring:
         - id: users-view-edit-delete
           uri: lb://user-service
           predicates:
-            - Path=/users/id/**
+            - Path=/users/**
             - Method=GET,PUT,DELETE
             - Header=Authorization, Bearer (.*)
           filters:
@@ -49,7 +49,7 @@ spring:
         - id: admin-users-view-edit-delete
           uri: lb://user-service
           predicates:
-            - Path=/admin/users/id/**
+            - Path=/admin/users/**
             - Method=GET,DELETE,PUT
             - Header=Authorization, Bearer (.*)
           filters:
