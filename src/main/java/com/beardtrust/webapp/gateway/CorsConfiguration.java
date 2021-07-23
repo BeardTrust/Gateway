@@ -24,7 +24,7 @@ public class CorsConfiguration {
 	private static final String ALLOWED_METHODS = "GET, PUT, POST, DELETE, OPTIONS";
 	private static final String ALLOWED_ORIGIN = "*";
 	private static final String MAX_AGE = "3600";
-
+	private static final String EXPOSED_HEADERS = "Authorization";
 	/**
 	 * Cors filter web filter.
 	 *
@@ -38,13 +38,12 @@ public class CorsConfiguration {
 			if (CorsUtils.isCorsRequest(request)) {
 				ServerHttpResponse response = ctx.getResponse();
 				HttpHeaders headers = response.getHeaders();
-				System.out.println(request.getHeaders());
-				System.out.println(response.getHeaders());
 
 				headers.add("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
 				headers.add("Access-Control-Allow-Methods", ALLOWED_METHODS);
 				headers.add("Access-Control-Max-Age", MAX_AGE);
 				headers.add("Access-Control-Allow-Headers", ALLOWED_HEADERS);
+				headers.add("Access-Control-Expose-Headers", EXPOSED_HEADERS);
 				if (request.getMethod() == HttpMethod.OPTIONS) {
 					response.setStatusCode(HttpStatus.OK);
 					return Mono.empty();
