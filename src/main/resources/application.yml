@@ -75,6 +75,29 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/admin/users, /api/admin/users
             - AuthorizationHeaderFilter
+        - id: accounts-update-user
+          uri: lb://accounts-service
+          predicates:
+            - Path=/accounts/**
+            - Method=POST,GET,PUT,DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+        - id: cards-service-main
+          uri: lb://cards-service
+          predicates:
+          - Path=/cards/**
+          - Method=POST,GET,PUT,DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/cards, /api/cards
+        - id: cards-service-types
+          uri: lb://cards-service
+          predicates:
+          - Path=/cardtypes/**
+          - Method=POST,GET,PUT,DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/cardtypes, /api/cardtypes
   security:
     user:
       name: ${SECNAME:dev}
