@@ -98,6 +98,20 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/cardtypes, /api/cardtypes
+        - id: loans-crud
+          uri: lb://loans-service
+          predicates:
+            - Path=/loans/**
+            - Method=POST,GET,PUT,DELETE,OPTIONS
+          filters:
+            - RemoveRequestHeader=Cookie
+        - id: loans-crud
+          uri: lb://loans-service
+          predicates:
+            - Path=/loantypes/**
+            - Method=POST,GET,PUT,DELETE,OPTIONS
+          filters:
+            - RemoveRequestHeader=Cookie
   security:
     user:
       name: ${SECNAME:dev}
