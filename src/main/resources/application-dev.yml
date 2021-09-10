@@ -113,7 +113,6 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
   security:
-  security:
     user:
       name: ${SECNAME:dev}
       password: ${SECPW:dev}
