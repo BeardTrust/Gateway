@@ -8,7 +8,7 @@ management:
       exposure:
         include: '*'
 eureka:
-  address: ${EUADDR:localhost}
+  address: ${EUADDR:192.168.0.10}
   port: ${EUPORT:8761}
   zone: ${EUZONE:eureka}
   client:
@@ -112,7 +112,6 @@ spring:
             - Method=POST,GET,PUT,DELETE,OPTIONS
           filters:
             - RemoveRequestHeader=Cookie
-  security:
   security:
     user:
       name: ${SECNAME:dev}
