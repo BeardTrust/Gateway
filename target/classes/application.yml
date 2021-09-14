@@ -1,0 +1,126 @@
+server:
+  port: ${PORT:9001}
+management:
+  server:
+    port: 10001
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+eureka:
+  address: ${EUADDR:localhost}
+  port: ${EUPORT:8761}
+  zone: ${EUZONE:eureka}
+  client:
+    service-url:
+      default-zone: http://${eureka.address}:${eureka.port}/${eureka.zone}
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - POST
+              - GET
+              - PUT
+              - DELETE
+      routes:
+        - id: users-registration
+          uri: lb://user-service
+          predicates:
+            - Path=/users
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/(?<segment>), /api/$\{segment}
+        - id: users-login
+          uri: lb://user-service
+          predicates:
+            - Path=/users/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/users/(?<segment>), /api/$\{segment}
+        - id: users-view-edit-delete
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+            - Method=GET,PUT,DELETE
+            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/users, /api/users
+            - AuthorizationHeaderFilter
+        - id: admin-users-view-edit-delete
+          uri: lb://user-service
+          predicates:
+            - Path=/admin/users/**
+            - Method=GET,DELETE,PUT
+            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/admin/users, /api/admin/users
+            - AuthorizationHeaderFilter
+        - id: admin-users-view-edit-delete
+          uri: lb://user-service
+          predicates:
+            - Path=/admin/users
+            - Method=POST,GET,PUT
+            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/admin/users, /api/admin/users
+            - AuthorizationHeaderFilter
+        - id: accounts-update-user
+          uri: lb://accounts-service
+          predicates:
+            - Path=/accounts/**
+            - Method=POST,GET,PUT,DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+        - id: cards-service-main
+          uri: lb://cards-service
+          predicates:
+          - Path=/cards/**
+          - Method=POST,GET,PUT,DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/cards, /api/cards
+        - id: cards-service-types
+          uri: lb://cards-service
+          predicates:
+          - Path=/cardtypes/**
+          - Method=POST,GET,PUT,DELETE
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/cardtypes, /api/cardtypes
+        - id: loans-crud
+          uri: lb://loans-service
+          predicates:
+            - Path=/loans/**
+            - Method=POST,GET,PUT,DELETE,OPTIONS
+          filters:
+            - RemoveRequestHeader=Cookie
+        - id: loans-crud
+          uri: lb://loans-service
+          predicates:
+            - Path=/loantypes/**
+            - Method=POST,GET,PUT,DELETE,OPTIONS
+          filters:
+            - RemoveRequestHeader=Cookie
+  security:
+    user:
+      name: ${SECNAME:dev}
+      password: ${SECPW:dev}
+token:
+  secret: aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj04WnEzS0NCZWQ1UQo=
+  expiration: 864000
+authorization:
+  token:
+    header:
+      name: Authorization
+      prefix: Bearer
