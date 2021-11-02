@@ -112,6 +112,13 @@ spring:
             - Method=POST,GET,PUT,DELETE,OPTIONS
           filters:
             - RemoveRequestHeader=Cookie
+        - id: transactions
+          uri: lb://transaction-service
+          predicates:
+            - Path=/transactions/**
+            - Method=POST,GET,PUT,DELETE,OPTIONS
+          filters:
+            - RemoveRequestHeader=Cookie
   security:
     user:
       name: ${SECNAME:dev}
